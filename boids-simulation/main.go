@@ -1,19 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"image/color"
-	"runtime"
+	"log"
 
-	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func init() {
-	// This is needed to arrange that main() runs on main thread.
-	// See documentation for functions that are only allowed to be called from the main thread.
-	runtime.LockOSThread()
-
-}
+/*
+	Important link to get this running on WSL
+	https://github.com/microsoft/WSL/issues/2855#issuecomment-358861903
+*/
 
 const (
 	screenWidth, screenHeight = 640, 360
@@ -33,15 +30,15 @@ func (g *Game) Update() error {
 	return nil
 }
 
-// func (g *Game) Draw(screen *ebiten.Image) {
-// 	for _, boid := range boids {
-// 		screen.Set(int(boid.Position.X+1), int(boid.Position.Y), green)
-// 		screen.Set(int(boid.Position.X-1), int(boid.Position.Y), green)
-// 		screen.Set(int(boid.Position.X), int(boid.Position.Y-1), green)
-// 		screen.Set(int(boid.Position.X), int(boid.Position.Y+1), green)
-// 	}
+func (g *Game) Draw(screen *ebiten.Image) {
+	for _, boid := range boids {
+		screen.Set(int(boid.Position.X+1), int(boid.Position.Y), green)
+		screen.Set(int(boid.Position.X-1), int(boid.Position.Y), green)
+		screen.Set(int(boid.Position.X), int(boid.Position.Y-1), green)
+		screen.Set(int(boid.Position.X), int(boid.Position.Y+1), green)
+	}
 
-// }
+}
 
 func (g *Game) Layout(_, _ int) (w, h int) {
 	return screenWidth, screenHeight
@@ -49,33 +46,12 @@ func (g *Game) Layout(_, _ int) (w, h int) {
 
 func main() {
 
-	err := glfw.Init()
-	if err != nil {
-		panic(err)
+	for i := 0; i < boidCount; i++ {
+		createBoid(i)
 	}
-	defer glfw.Terminate()
-	window, err := glfw.CreateWindow(640, 480, "Testing", nil, nil)
-	if err != nil {
-		panic(err)
+	ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
+	ebiten.SetWindowTitle("Boids in a box")
+	if err := ebiten.RunGame(&Game{}); err != nil {
+		log.Fatal(err)
 	}
-
-	window.MakeContextCurrent()
-
-	for !window.ShouldClose() {
-		// Do OpenGL stuff.
-		window.SwapBuffers()
-		glfw.PollEvents()
-	}
-	//	glfw.WindowHint(glfw.Visible, glfw.False)
-
-	fmt.Println("OPA START")
-
-	// for i := 0; i < boidCount; i++ {
-	// 	createBoid(i)
-	// }
-	// ebiten.SetWindowSize(screenWidth*2, screenHeight*2)
-	// ebiten.SetWindowTitle("Boids in a box")
-	// if err := ebiten.RunGame(&Game{}); err != nil {
-	// 	log.Fatal(err)
-	// }
 }
