@@ -31,12 +31,12 @@ func (v Vector2D) MultiplyBoth(value float64) Vector2D {
 	return Vector2D{X: v.X * value, Y: v.Y * value}
 }
 
-func (v Vector2D) DuvisionBoth(value float64) Vector2D {
+func (v Vector2D) DivisionBoth(value float64) Vector2D {
 	return Vector2D{X: v.X / value, Y: v.Y / value}
 }
 
 func (v Vector2D) limit(lower, upper float64) Vector2D {
-	return Vector2D{X: math.Min(math.Max(v.X, lower), upper), Y: math.Min(math.Max(v.X, lower), upper)}
+	return Vector2D{X: math.Min(math.Max(v.X, lower), upper), Y: math.Min(math.Max(v.Y, lower), upper)}
 }
 
 func (v Vector2D) Distance(v2 Vector2D) float64 {

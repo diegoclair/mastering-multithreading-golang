@@ -20,8 +20,9 @@ const (
 )
 
 var (
-	green = color.RGBA{10, 255, 50, 255}
-	boids [boidCount]*Boid
+	green   = color.RGBA{10, 255, 50, 255}
+	boids   [boidCount]*Boid
+	boidMap [screenWidth + 1][screenHeight + 1]int
 )
 
 type Game struct{}
@@ -45,6 +46,12 @@ func (g *Game) Layout(_, _ int) (w, h int) {
 }
 
 func main() {
+
+	for i := 0; i <= screenWidth; i++ {
+		for j := 0; j <= screenHeight; j++ {
+			boidMap[i][j] = -1
+		}
+	}
 
 	for i := 0; i < boidCount; i++ {
 		createBoid(i)
