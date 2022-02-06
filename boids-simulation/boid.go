@@ -14,7 +14,7 @@ type Boid struct {
 
 func (b *Boid) calcAcceleration() Vector2D {
 	upper, lower := b.Position.AddBoth(viewRadius), b.Position.AddBoth(-viewRadius)
-	avgVelocity, avgPosition := Vector2D{0, 0}, Vector2D{0, 0}
+	avgVelocity, avgPosition, separation := Vector2D{0, 0}, Vector2D{0, 0}, Vector2D{0, 0}
 
 	count := 0.0
 
@@ -29,43 +29,44 @@ func (b *Boid) calcAcceleration() Vector2D {
 					count++
 					avgVelocity = avgVelocity.Add(boids[otherBoidID].Velocity)
 					avgPosition = avgPosition.Add(boids[otherBoidID].Position)
+					separation = separation.Add(b.Position.Subtract(boids[otherBoidID].Position).DivisionBoth(distance))
 				}
 			}
 		}
 	}
 	rWlock.RUnlock()
 
-	accel := Vector2D{0, 0}
+	accel := Vector2D{X: b.BorderBounce(b.Position.X, screenWidth), Y: b.BorderBounce(b.Position.Y, screenHeight)}
 	if count > 0 {
 		avgPosition, avgVelocity = avgPosition.DivisionBoth(count), avgVelocity.DivisionBoth(count)
 		accelAlignment := avgVelocity.Subtract(b.Velocity).MultiplyBoth(adjRate)
 		accelCohesion := avgPosition.Subtract(b.Position).MultiplyBoth(adjRate)
-		accel = accel.Add(accelAlignment).Add(accelCohesion)
+		accelSeparations := separation.MultiplyBoth(adjRate)
+		accel = accel.Add(accelAlignment).Add(accelCohesion).Add(accelSeparations)
 	}
 	return accel
+}
+
+func (b *Boid) BorderBounce(pos, maxBorderPos float64) float64 {
+
+	if pos < viewRadius {
+		return 1 / pos
+	} else if pos > maxBorderPos-viewRadius {
+		return 1 / (pos - maxBorderPos)
+	}
+	return 0
 }
 
 func (b *Boid) moveOne() {
 
 	acceleration := b.calcAcceleration()
 
-	lock.Lock()
+	rWlock.Lock()
 	b.Velocity = b.Velocity.Add(acceleration).limit(-1, 1)
-
 	boidMap[int(b.Position.X)][int(b.Position.Y)] = -1
 	b.Position = b.Position.Add(b.Velocity)
 	boidMap[int(b.Position.X)][int(b.Position.Y)] = b.ID
-
-	nextPosition := b.Position.Add(b.Velocity)
-	if nextPosition.X >= screenWidth || nextPosition.X < 0 {
-		b.Velocity = Vector2D{X: -b.Velocity.X, Y: b.Velocity.Y}
-	}
-
-	if nextPosition.Y >= screenHeight || nextPosition.Y < 0 {
-		b.Velocity = Vector2D{X: b.Velocity.X, Y: -b.Velocity.Y}
-	}
-
-	lock.Unlock()
+	rWlock.Unlock()
 }
 
 func (b *Boid) start() {
