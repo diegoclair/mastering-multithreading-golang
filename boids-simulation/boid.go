@@ -18,7 +18,7 @@ func (b *Boid) calcAcceleration() Vector2D {
 
 	count := 0.0
 
-	lock.Lock()
+	rWlock.RLock()
 
 	//sometimes the "lower X or Y" may is negative
 	//and the "upper X or Y" can be more than screenWidth
@@ -33,7 +33,7 @@ func (b *Boid) calcAcceleration() Vector2D {
 			}
 		}
 	}
-	lock.Unlock()
+	rWlock.RUnlock()
 
 	accel := Vector2D{0, 0}
 	if count > 0 {
@@ -48,6 +48,7 @@ func (b *Boid) calcAcceleration() Vector2D {
 func (b *Boid) moveOne() {
 
 	acceleration := b.calcAcceleration()
+
 	lock.Lock()
 	b.Velocity = b.Velocity.Add(acceleration).limit(-1, 1)
 
