@@ -8,11 +8,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-/*
-	Important link to get this running on WSL
-	https://github.com/microsoft/WSL/issues/2855#issuecomment-358861903
-*/
-
 const (
 	screenWidth, screenHeight = 640, 360
 	boidCount                 = 500
