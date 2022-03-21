@@ -4,7 +4,7 @@ import (
 	"image/color"
 	"math"
 
-	. "github.com/diegoclair/mastering-multithreading-golang/deadlocks_train/common"
+	"github.com/diegoclair/mastering-multithreading-golang/deadlocks_train/common"
 	"github.com/hajimehoshi/ebiten"
 )
 
@@ -42,7 +42,7 @@ func DrawTrains(screen *ebiten.Image) {
 	drawYTrain(screen, 3, -1, 310, 135)
 }
 
-func drawIntersection(screen *ebiten.Image, intersection *Intersection, x int, y int) {
+func drawIntersection(screen *ebiten.Image, intersection *common.Intersection, x int, y int) {
 	c := white
 	if intersection.LockedBy >= 0 {
 		c = colours[intersection.LockedBy]

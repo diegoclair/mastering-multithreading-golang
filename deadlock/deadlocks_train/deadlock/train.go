@@ -3,10 +3,10 @@ package deadlock
 import (
 	"time"
 
-	. "github.com/diegoclair/mastering-multithreading-golang/deadlocks_train/common"
+	"github.com/diegoclair/mastering-multithreading-golang/deadlocks_train/common"
 )
 
-func MoveTrain(train *Train, distance int, crossings []*Crossing) {
+func MoveTrain(train *common.Train, distance int, crossings []*common.Crossing) {
 	for train.PositionFront < distance {
 		train.PositionFront += 1
 		for _, crossing := range crossings {
