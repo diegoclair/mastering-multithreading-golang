@@ -11,9 +11,9 @@ import (
 )
 
 /*
-	time used before go routines        -> 53.791521271s     // without extra loop of 20 times
-	time used with mutex mode      		-> 21.077837301s
-	time used with atomic mode     		-> 3.587836763s
+	time used to process before go routines        	-> 53.791521271s     // without extra loop of 20 times
+	time used to process with mutex mode      		-> 21.077837301s
+	time used to process with atomic mode     		-> 3.587836763s
 */
 
 const (
@@ -22,6 +22,7 @@ const (
 	mutexMode  = 2
 )
 
+//choose the process mode
 const processWith = mutexMode
 
 func main() {
